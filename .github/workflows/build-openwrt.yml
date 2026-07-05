@@ -63,14 +63,16 @@ jobs:
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
-    - name: Cache ccache
+    - name: Cache dl and ccache
       uses: actions/cache@v4
       with:
-        path: /workdir/openwrt/.ccache
-        key: ccache-${{ env.REPO_BRANCH }}-${{ github.sha }}
+        path: |
+          /workdir/openwrt/dl
+          /workdir/openwrt/.ccache
+        key: build-${{ env.REPO_BRANCH }}-${{ hashFiles('.config') }}
         restore-keys: |
-          ccache-${{ env.REPO_BRANCH }}-
-          ccache-
+          build-${{ env.REPO_BRANCH }}-
+          build-
 
     - name: Load custom feeds
       run: |
